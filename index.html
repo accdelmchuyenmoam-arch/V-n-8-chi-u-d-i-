@@ -8,41 +8,127 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Cormorant+Garamond:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        body { background-color: black; margin: 0; overflow: hidden; }
+        body { 
+            background-color: #050505; 
+            margin: 0; 
+            overflow: hidden; 
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        /* Font Styles */
         .font-thuphap { font-family: 'Dancing Script', cursive; }
+        .font-cungdinh { font-family: 'Playfair Display', serif; }
         .font-noidung { font-family: 'Cormorant Garamond', serif; }
 
+        /* Animation Background Particles */
+        .particles {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            width: 2px; height: 2px;
+            background: #d4af37;
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatUp 10s infinite linear;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        /* Scroll Roller Visuals */
         .scroll-roller {
-            background: linear-gradient(to bottom, #2a1810 0%, #5d4037 20%, #8d6e63 45%, #5d4037 55%, #2a1810 100%);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+            background: linear-gradient(to bottom, 
+                #5c4013 0%, 
+                #8e6d13 20%, 
+                #fcebb6 45%, 
+                #d4af37 50%,
+                #fcebb6 55%, 
+                #8e6d13 80%, 
+                #5c4013 100%);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.9);
             position: relative;
             z-index: 50;
         }
 
         .roller-end {
-            background: radial-gradient(circle at 30% 30%, #8d6e63, #3e2723, #1a100a);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 5px 0 15px rgba(0,0,0,0.5);
-            border: 2px solid #3e2723;
+            background: radial-gradient(circle at 30% 30%, #ffecb3, #d4af37, #5c4013);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 5px 5px 15px rgba(0,0,0,0.9);
+            border: 1px solid #8e6d13;
+        }
+
+        /* Paper Styles */
+        .paper-container {
+            transition: height 5000ms cubic-bezier(0.45, 0, 0.55, 1); /* Linear-ish ease for heavy feel */
+            width: 88vw;
+            max-width: 56rem; /* max-w-4xl */
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 0 100px rgba(0,0,0,0.8);
         }
 
         .paper-bg {
-            background-color: #e3cbae;
-            background-image: url("https://www.transparenttextures.com/patterns/aged-paper.png");
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.4);
-            transition: height 5000ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
+            width: 100%;
+            height: 100%;
+            background-color: #8a1c1c; /* Deep Imperial Red */
+            background-image: 
+                linear-gradient(90deg, rgba(0,0,0,0.2) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.2) 100%),
+                url("https://www.transparenttextures.com/patterns/rice-paper-2.png");
+            border-left: 4px double #d4af37;
+            border-right: 4px double #d4af37;
+            position: relative;
         }
 
-        .clip-tassel {
-            clip-path: polygon(0% 0%, 100% 0%, 100% 70%, 50% 100%, 0% 70%);
+        /* Text Styles */
+        .text-gold-gradient {
+            background: linear-gradient(to bottom, #fff8db, #d4af37, #b8860b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+            filter: drop-shadow(0 0 1px rgba(212, 175, 55, 0.5));
         }
 
-        /* Animation cho chữ khi chuyển slide */
-        .fade-in { animation: fadeIn 1s ease-in-out forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); filter: blur(5px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        .text-gold-solid {
+            color: #fcebb6;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        /* Dragon Pattern */
+        .dragon-bg {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://www.transparenttextures.com/patterns/oriental-tiles.png');
+            opacity: 0.15;
+            mix-blend-mode: overlay;
+        }
+
+        /* Animations */
+        .content-fade-in {
+            animation: contentAppear 2s ease-out forwards;
+        }
+        @keyframes contentAppear {
+            0% { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        .pulse-glow {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.8)); transform: scale(1.02); }
         }
     </style>
 </head>
@@ -50,122 +136,225 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect } = React;
+
+        // Particle Component for Atmosphere
+        const Particles = () => {
+            const [particles, setParticles] = useState([]);
+            useEffect(() => {
+                const count = 30;
+                const newParticles = Array.from({ length: count }).map((_, i) => ({
+                    id: i,
+                    left: Math.random() * 100 + '%',
+                    delay: Math.random() * 10 + 's',
+                    duration: 5 + Math.random() * 10 + 's'
+                }));
+                setParticles(newParticles);
+            }, []);
+
+            return (
+                <div className="particles">
+                    {particles.map(p => (
+                        <div key={p.id} className="particle" style={{ left: p.left, animationDelay: p.delay, animationDuration: p.duration }}></div>
+                    ))}
+                </div>
+            );
+        };
 
         const slides = [
-            { title: "Chiếu Dời Đô", subtitle: "(Thiên Đô Chiếu)", content: "Lý Công Uẩn", subContent: "Năm 1010 - Triều Lý", isTitle: true },
-            { title: "I. Tác Giả", heading: "Tiểu Sử & Năm Sinh", points: ["Tên: Lý Công Uẩn (974 – 1028).", "Tức: Lý Thái Tổ.", "Là người sáng lập ra vương triều nhà Lý.", "Trị vì đất nước từ năm 1009 đến năm 1028."] },
-            { title: "I. Tác Giả", heading: "Quê Quán & Con Người", points: ["Quê quán: Hương Cổ Pháp (Bắc Ninh).", "Là người thông minh, nhân ái, có chí lớn.", "Có công lao to lớn thống nhất đất nước."] },
-            { title: "II. Tìm Hiểu Chung", heading: "Hoàn Cảnh Sáng Tác", points: ["Năm Canh Tuất (1010), Lý Công Uẩn viết bài chiếu.", "Bối cảnh đất nước đang ổn định, cần trung tâm mới.", "Bày tỏ ý định dời đô từ Hoa Lư về Đại La."] },
-            { title: "III. Phân Tích", heading: "Lợi Thế Địa Lý Đại La", points: ["Vị trí: Nằm ở nơi trung tâm trời đất.", "Thế đất: 'Rồng cuộn hổ ngồi' cực đẹp.", "Hướng: Đúng ngôi Nam, Bắc, Đông, Tây."] },
-            { title: "IV. Tổng Kết", heading: "Nội Dung & Nghệ Thuật", points: ["Nghệ thuật: Lập luận sắc sảo, lý tình hài hòa.", "Nội dung: Khát vọng độc lập, tự cường dân tộc.", "Ý nghĩa: Mở ra thời kỳ hưng thịnh cho dân tộc."] }
+            { 
+                title: "Chiếu Dời Đô", 
+                subtitle: "(Thiên Đô Chiếu)", 
+                content: "Lý Công Uẩn", 
+                subContent: "Mùa Thu, Năm Canh Tuất - 1010", 
+                type: "intro" 
+            },
+            { 
+                title: "I. Tác Giả", 
+                heading: "Lý Thái Tổ", 
+                points: [
+                    "Tên húy: Lý Công Uẩn (974 – 1028).",
+                    "Người làng Cổ Pháp, châu Cổ Pháp (nay thuộc Từ Sơn, Bắc Ninh).",
+                    "Vị vua khai sáng triều đại nhà Lý rực rỡ.",
+                    "Đức độ, trí tuệ, có tầm nhìn thiên niên kỷ."
+                ] 
+            },
+            { 
+                title: "II. Hoàn Cảnh", 
+                heading: "Vận Nước Đang Lên", 
+                points: [
+                    "Năm 1010, sau khi lên ngôi Hoàng đế.",
+                    "Nhận thấy Hoa Lư đất hẹp, địa thế hiểm trở chỉ hợp phòng thủ.",
+                    "Đất nước cần không gian mới để phát triển phồn thịnh.",
+                    "Quyết định dời đô về thành Đại La."
+                ] 
+            },
+            { 
+                title: "III. Địa Thế", 
+                heading: "Thành Đại La", 
+                points: [
+                    "Nơi trung tâm trời đất, thế rồng cuộn hổ ngồi.",
+                    "Đúng ngôi nam bắc đông tây, lại tiện hướng nhìn sông dựa núi.",
+                    "Địa thế rộng mà bằng, đất đai cao mà thoáng.",
+                    "Dân cư khỏi chịu cảnh khốn khổ ngập lụt."
+                ] 
+            },
+            { 
+                title: "IV. Ý Nghĩa", 
+                heading: "Tầm Nhìn Vĩ Đại", 
+                points: [
+                    "Thể hiện ý chí độc lập, tự cường của dân tộc.",
+                    "Đánh dấu sự trưởng thành của Đại Việt.",
+                    "Mở ra kỷ nguyên Thăng Long văn hiến ngàn năm."
+                ] 
+            }
         ];
 
         function App() {
             const [isStarted, setIsStarted] = useState(false);
             const [currentSlide, setCurrentSlide] = useState(0);
-            const [isMuted, setIsMuted] = useState(false);
-            const [isOpening, setIsOpening] = useState(false);
-            const audioRef = useRef(null);
+            const [isUnrolling, setIsUnrolling] = useState(false);
 
             const startPresentation = () => {
+                if (isStarted) return;
                 setIsStarted(true);
-                setIsOpening(true);
-                if (audioRef.current && !isMuted) {
-                    audioRef.current.play().catch(e => console.log(e));
-                }
-                setTimeout(() => setIsOpening(false), 5000);
+                setIsUnrolling(true);
+                
+                // Thời gian cuộn là 5 giây
+                setTimeout(() => {
+                    setIsUnrolling(false);
+                }, 5000);
             };
 
             const nextSlide = () => { if (currentSlide < slides.length - 1) setCurrentSlide(s => s + 1); };
             const prevSlide = () => { if (currentSlide > 0) setCurrentSlide(s => s - 1); };
 
             return (
-                <div className="w-full h-screen flex items-center justify-center overflow-hidden font-serif">
-                    <audio ref={audioRef} src="https://assets.mixkit.co/active_storage/sfx/2409/2409-preview.mp3" loop />
+                <div className="w-full h-screen flex flex-col items-center justify-center relative bg-[#0a0a0a]">
+                    <Particles />
+                    
+                    {/* Background Decorative Element */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
+                         <div className="w-[600px] h-[600px] rounded-full border border-[#d4af37] flex items-center justify-center">
+                            <div className="w-[450px] h-[450px] border border-[#d4af37] rotate-45"></div>
+                         </div>
+                    </div>
 
                     {!isStarted ? (
-                        <div className="flex flex-col items-center z-50">
-                            <h1 className="text-[#d8a45d] text-6xl md:text-8xl font-thuphap mb-12 animate-pulse">Chiếu Dời Đô</h1>
-                            <div className="relative group cursor-pointer" onClick={startPresentation}>
-                                <div className="w-[300px] md:w-[500px] h-12 scroll-roller rounded-full mb-[-8px]"></div>
-                                <div className="w-[300px] md:w-[500px] h-12 scroll-roller rounded-full shadow-2xl"></div>
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#6b0000] p-4 rounded-full border-2 border-[#d8a45d] text-[#d8a45d]">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        /* Màn hình Chờ */
+                        <div className="z-50 text-center flex flex-col items-center cursor-pointer group animate-fade-in" onClick={startPresentation}>
+                            <h1 className="text-gold-gradient text-7xl md:text-9xl font-thuphap mb-12 drop-shadow-[0_0_25px_rgba(212,175,55,0.6)] animate-pulse">
+                                Thiên Đô Chiếu
+                            </h1>
+                            
+                            {/* Cuộn chiếu đóng */}
+                            <div className="relative transition-transform duration-500 group-hover:scale-105">
+                                {/* Trục trên */}
+                                <div className="w-[300px] md:w-[600px] h-12 scroll-roller rounded-t-lg border-b border-[#5c4013]"></div>
+                                {/* Thân chiếu đóng */}
+                                <div className="w-[280px] md:w-[580px] h-4 bg-[#800000] mx-auto border-l border-r border-[#d4af37]"></div>
+                                {/* Trục dưới */}
+                                <div className="w-[300px] md:w-[600px] h-12 scroll-roller rounded-b-lg shadow-[0_20px_50px_rgba(0,0,0,1)]"></div>
+                                
+                                {/* Huy hiệu Rồng (Nút bấm) */}
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-[#600000] rounded-full border-4 border-[#d4af37] flex items-center justify-center shadow-[0_0_40px_rgba(212,175,55,0.6)] pulse-glow z-50">
+                                    <span className="text-[#d4af37] font-thuphap text-3xl pt-1">Mở</span>
                                 </div>
                             </div>
+                            
+                            <p className="mt-16 text-[#fcebb6] font-cungdinh text-xl tracking-[0.4em] uppercase opacity-70 group-hover:opacity-100 transition-opacity">
+                                Lý Thái Tổ • 1010
+                            </p>
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center">
-                            {/* Trục trên */}
-                            <div className="w-[90vw] max-w-4xl h-10 md:h-14 scroll-roller rounded-full flex justify-between px-2 z-20">
-                                <div className="w-12 md:w-16 h-12 md:h-16 roller-end rounded-full -ml-6 md:-ml-10 self-center"></div>
-                                <div className="w-12 md:w-16 h-12 md:h-16 roller-end rounded-full -mr-6 md:-mr-10 self-center"></div>
-                            </div>
-
-                            {/* Giấy chiếu */}
-                            <div className="w-[85vw] max-w-3xl paper-bg relative overflow-hidden" style={{ height: isStarted ? '70vh' : '0' }}>
-                                <div className="absolute inset-0 p-6 md:p-12 flex items-center justify-center">
-                                    {slides.map((s, i) => (
-                                        <div key={i} className={`absolute inset-0 p-8 flex flex-col items-center justify-center transition-opacity duration-1000 ${currentSlide === i ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                                            {s.isTitle ? (
-                                                <div className="fade-in text-center">
-                                                    <h2 className="text-6xl md:text-8xl font-thuphap text-[#6b0000] mb-4">{s.title}</h2>
-                                                    <p className="text-xl md:text-2xl italic text-[#3e2723] mb-8">{s.subtitle}</p>
-                                                    <div className="w-24 h-1 bg-[#6b0000] mx-auto mb-6 opacity-40"></div>
-                                                    <p className="text-3xl md:text-5xl font-bold uppercase tracking-widest">{s.content}</p>
-                                                    <p className="mt-4 text-[#5d4037]">{s.subContent}</p>
-                                                </div>
-                                            ) : (
-                                                <div className="fade-in w-full">
-                                                    <h3 className="text-[#800000] font-thuphap text-4xl md:text-6xl mb-8 border-b border-red-800/20 pb-4 inline-block">{s.heading}</h3>
-                                                    <ul className="text-left space-y-4 max-w-xl mx-auto">
-                                                        {s.points.map((p, idx) => (
-                                                            <li key={idx} className="flex gap-3 text-xl md:text-2xl font-noidung text-[#2d1b0d]">
-                                                                <span className="text-red-800">❧</span> {p}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
+                        /* Màn hình Chiếu đã mở */
+                        <div className="flex flex-col items-center relative z-10 w-full h-full justify-center">
+                            
+                            {/* Trục cuốn TRÊN */}
+                            <div className="w-[92vw] max-w-5xl h-12 md:h-16 scroll-roller rounded-full flex justify-between px-1 z-30 shrink-0">
+                                <div className="w-16 md:w-24 h-16 md:h-24 roller-end rounded-full -ml-8 md:-ml-12 self-center relative">
+                                    <div className="absolute inset-2 border border-[#8e6d13] rounded-full opacity-50"></div>
+                                </div>
+                                <div className="w-16 md:w-24 h-16 md:h-24 roller-end rounded-full -mr-8 md:-mr-12 self-center relative">
+                                    <div className="absolute inset-2 border border-[#8e6d13] rounded-full opacity-50"></div>
                                 </div>
                             </div>
 
-                            {/* Trục dưới */}
-                            <div className="w-[90vw] max-w-4xl h-10 md:h-14 scroll-roller rounded-full flex justify-between px-2 mt-[-2px] z-20">
-                                <div className="w-12 md:w-16 h-12 md:h-16 roller-end rounded-full -ml-6 md:-ml-10 self-center"></div>
-                                <div className="w-12 md:w-16 h-12 md:h-16 roller-end rounded-full -mr-6 md:-mr-10 self-center"></div>
-                                {/* Tua rua */}
-                                <div className="absolute left-10 bottom-[-40px] w-3 h-12 bg-red-900 clip-tassel"></div>
-                                <div className="absolute right-10 bottom-[-40px] w-3 h-12 bg-red-900 clip-tassel"></div>
+                            {/* PHẦN GIẤY CHIẾU (Animation Area) */}
+                            <div className="paper-container" style={{ height: isStarted ? '70vh' : '0px' }}>
+                                <div className="paper-bg w-full h-full">
+                                    <div className="dragon-bg"></div>
+                                    
+                                    {/* Nội dung bên trong chiếu */}
+                                    <div className={`relative w-full h-full flex items-center justify-center transition-opacity duration-1000 delay-[2000ms] ${isUnrolling ? 'opacity-0' : 'opacity-100'}`}>
+                                        
+                                        {/* Slide Content */}
+                                        {slides.map((s, i) => (
+                                            <div key={i} 
+                                                className={`absolute inset-0 p-8 md:p-16 flex flex-col items-center justify-center transition-all duration-1000 ease-in-out transform
+                                                ${currentSlide === i ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95 pointer-events-none'}`}>
+                                                
+                                                {s.type === "intro" ? (
+                                                    <div className="text-center w-full border-4 border-double border-[#d4af37]/30 p-8 md:p-12 bg-black/10 backdrop-blur-[1px]">
+                                                        <h2 className="text-6xl md:text-8xl font-thuphap text-gold-gradient mb-6 drop-shadow-md">{s.title}</h2>
+                                                        <p className="text-2xl md:text-3xl italic text-[#fcebb6] mb-8 font-cungdinh opacity-90">{s.subtitle}</p>
+                                                        
+                                                        <div className="flex items-center justify-center gap-4 mb-8 opacity-60">
+                                                            <div className="h-[1px] w-20 bg-[#d4af37]"></div>
+                                                            <div className="w-2 h-2 rotate-45 bg-[#d4af37]"></div>
+                                                            <div className="h-[1px] w-20 bg-[#d4af37]"></div>
+                                                        </div>
+
+                                                        <p className="text-4xl md:text-6xl font-bold uppercase tracking-[0.15em] text-gold-solid mb-4 font-cungdinh">{s.content}</p>
+                                                        <p className="mt-4 text-xl md:text-2xl text-[#e6c200] font-noidung tracking-widest">{s.subContent}</p>
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-full h-full flex flex-col justify-center">
+                                                        <div className="text-center mb-6 md:mb-10 border-b border-[#d4af37]/40 pb-4 mx-auto w-3/4">
+                                                            <span className="text-[#fcebb6] uppercase tracking-[0.3em] font-bold text-sm block mb-2 opacity-80">{s.title}</span>
+                                                            <h2 className="text-5xl md:text-7xl font-thuphap text-gold-gradient">{s.heading}</h2>
+                                                        </div>
+                                                        <div className="flex-1 overflow-y-auto px-4 custom-scrollbar flex items-center justify-center">
+                                                            <ul className="text-left space-y-6 md:space-y-8 max-w-3xl mx-auto w-full">
+                                                                {s.points.map((p, idx) => (
+                                                                    <li key={idx} className="flex gap-4 text-xl md:text-3xl font-noidung text-[#fffae0] font-medium leading-relaxed items-start">
+                                                                        <span className="text-[#d4af37] text-2xl mt-1">❖</span> 
+                                                                        <span className="drop-shadow-md">{p}</span>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
 
-                            {/* Điều khiển */}
-                            {!isOpening && (
-                                <div className="fixed bottom-6 flex gap-8 items-center bg-black/40 backdrop-blur p-3 px-6 rounded-full border border-white/10 fade-in">
-                                    <button onClick={prevSlide} disabled={currentSlide === 0} className="text-[#d8a45d] disabled:opacity-20">
+                            {/* Trục cuốn DƯỚI */}
+                            <div className="w-[92vw] max-w-5xl h-12 md:h-16 scroll-roller rounded-full flex justify-between px-1 z-30 shadow-[0_-5px_30px_rgba(0,0,0,0.6)] shrink-0 mt-[-5px]">
+                                <div className="w-16 md:w-24 h-16 md:h-24 roller-end rounded-full -ml-8 md:-ml-12 self-center relative flex items-center justify-center">
+                                    <div className="w-2 h-2 bg-[#332200] rounded-full opacity-60"></div>
+                                </div>
+                                <div className="w-16 md:w-24 h-16 md:h-24 roller-end rounded-full -mr-8 md:-mr-12 self-center relative flex items-center justify-center">
+                                     <div className="w-2 h-2 bg-[#332200] rounded-full opacity-60"></div>
+                                </div>
+                                {/* Tua rua trang trí */}
+                                <div className="absolute left-16 md:left-24 bottom-[-60px] flex flex-col items-center">
+                                    <div className="w-1 h-16 bg-[#b8860b]"></div>
+                                    <div className="w-4 h-12 bg-gradient-to-b from-[#d4af37] to-[#800000] rounded-b-full"></div>
+                                </div>
+                                <div className="absolute right-16 md:right-24 bottom-[-60px] flex flex-col items-center">
+                                    <div className="w-1 h-16 bg-[#b8860b]"></div>
+                                    <div className="w-4 h-12 bg-gradient-to-b from-[#d4af37] to-[#800000] rounded-b-full"></div>
+                                </div>
+                            </div>
+
+                            {/* Bộ điều khiển (Chỉ hiện khi cuộn xong) */}
+                            <div className={`fixed bottom-6 transition-all duration-1000 ${isUnrolling ? 'opacity-0 translate-y-10' : 'opacity-100 translate-y-0'} delay-500`}>
+                                <div className="flex gap-8 items-center bg-black/80 backdrop-blur-md p-3 px-8 rounded-full border border-[#d4af37]/50 shadow-[0_0_20px_rgba(212,175,55,0.2)]">
+                                    <button onClick={prevSlide} disabled={currentSlide === 0} 
+                                        className="text-[#d4af37] disabled:opacity-30 hover:scale-125 transition-all p-2 rounded-full hover:bg-[#d4af37]/10">
                                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m15 18-6-6 6-6"/></svg>
-                                    </button>
-                                    <span className="text-[#d8a45d] font-noidung text-xl">{currentSlide + 1} / {slides.length}</span>
-                                    <button onClick={nextSlide} disabled={currentSlide === slides.length - 1} className="text-[#d8a45d] disabled:opacity-20">
-                                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6"/></svg>
-                                    </button>
-                                    <button onClick={() => setIsStarted(false)} className="text-[#d8a45d] ml-4">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-            );
-        }
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html>
-
+                       
