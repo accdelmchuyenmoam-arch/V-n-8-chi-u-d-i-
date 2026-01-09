@@ -1,0 +1,435 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { ChevronRight, ChevronLeft, Volume2, VolumeX, Play, RotateCcw } from 'lucide-react';
+
+const ScrollPresentation = () => {
+  const [isStarted, setIsStarted] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isOpening, setIsOpening] = useState(false);
+  
+  const audioRef = useRef(null);
+  const bgAudioRef = useRef(null);
+
+  // Nội dung chi tiết - Dữ liệu cũ
+  const slides = [
+    {
+      title: "Chiếu Dời Đô",
+      subtitle: "(Thiên Đô Chiếu)",
+      content: "Lý Công Uẩn",
+      subContent: "Năm 1010 - Triều Lý",
+      isTitle: true
+    },
+    {
+      title: "I. Tác Giả",
+      heading: "Tiểu Sử & Năm Sinh",
+      points: [
+        "Tên: Lý Công Uẩn (974 – 1028).",
+        "Tức: Lý Thái Tổ.",
+        "Là người sáng lập ra vương triều nhà Lý.",
+        "Trị vì đất nước từ năm 1009 đến năm 1028."
+      ]
+    },
+    {
+      title: "I. Tác Giả",
+      heading: "Quê Quán & Con Người",
+      points: [
+        "Quê quán: Hương Cổ Pháp, châu Cổ Pháp (nay là phường Đình Bảng, thị xã Từ Sơn, tỉnh Bắc Ninh).",
+        "Là người thông minh, nhân ái, có chí lớn.",
+        "Có công lao to lớn trong việc thống nhất và phát triển đất nước."
+      ]
+    },
+    {
+      title: "II. Tìm Hiểu Chung",
+      heading: "Hoàn Cảnh Sáng Tác",
+      points: [
+        "Năm Canh Tuất (1010), Lý Công Uẩn viết bài chiếu này.",
+        "Viết trong bối cảnh đất nước đang ổn định và cần một trung tâm phát triển mới.",
+        "Viết để bày tỏ ý định dời đô từ Hoa Lư về Đại La."
+      ]
+    },
+    {
+      title: "II. Tìm Hiểu Chung",
+      heading: "Thể Loại & Mục Đích",
+      points: [
+        "Thể loại: Chiếu (Văn bản hành chính nhà nước cổ).",
+        "Đặc điểm: Do nhà vua ban bố mệnh lệnh cho bề tôi và dân chúng.",
+        "Mục đích: Thuyết phục quần thần và nhân dân ủng hộ việc dời đô."
+      ]
+    },
+    {
+      title: "III. Phân Tích",
+      heading: "Cơ Sở Lịch Sử Của Việc Dời Đô",
+      points: [
+        "Dẫn chứng về các triều đại Trung Hoa (nhà Thương, nhà Chu).",
+        "Việc dời đô không phải tự ý mà nhằm mục đích mưu toan nghiệp lớn.",
+        "Kết quả: Đất nước thịnh vượng, vận số lâu dài."
+      ]
+    },
+    {
+      title: "III. Phân Tích",
+      heading: "Thực Tế Hai Nhà Đinh - Lê",
+      points: [
+        "Hai nhà Đinh, Lê cứ đóng yên một chỗ ở vùng núi Hoa Lư.",
+        "Hậu quả: Triều đại ngắn ngủi, trăm họ hao tốn.",
+        "Bày tỏ nỗi lòng: 'Trẫm rất đau xót, không thể không dời đổi'."
+      ]
+    },
+    {
+      title: "III. Phân Tích",
+      heading: "Lợi Thế Địa Lý Thành Đại La",
+      points: [
+        "Vị trí: Nằm ở nơi trung tâm trời đất.",
+        "Thế đất: 'Rồng cuộn hổ ngồi' cực đẹp.",
+        "Hướng: Đúng ngôi Nam, Bắc, Đông, Tây; nhìn sông dựa núi."
+      ]
+    },
+    {
+      title: "III. Phân Tích",
+      heading: "Lợi Thế Kinh Tế - Xã Hội",
+      points: [
+        "Địa thế: Rộng mà bằng, cao mà thoáng.",
+        "Dân cư: Thoát cảnh ngập lụt, đời sống yên ổn.",
+        "Kinh tế: Muôn vật cực kỳ phong phú, tốt tươi."
+      ]
+    },
+    {
+      title: "III. Phân Tích",
+      heading: "Khẳng Định Vị Thế Đại La",
+      points: [
+        "Là chốn tụ hội trọng yếu của bốn phương đất nước.",
+        "Là nơi kinh đô bậc nhất của đế vương muôn đời.",
+        "Là lựa chọn duy nhất đúng đắn cho sự phát triển dân tộc."
+      ]
+    },
+    {
+      title: "IV. Tổng Kết",
+      heading: "Nội Dung & Nghệ Thuật",
+      points: [
+        "Nghệ thuật: Văn biền ngẫu, lập luận sắc sảo, kết hợp lý và tình.",
+        "Nội dung: Phản ánh khát vọng độc lập, tự cường.",
+        "Ý nghĩa: Mở ra thời kỳ hưng thịnh nhất của chế độ phong kiến Việt Nam."
+      ]
+    },
+    {
+      title: "V. Ý Nghĩa Kết Thúc",
+      heading: "Tư Tưởng Thân Dân",
+      points: [
+        "Câu kết: 'Các khanh nghĩ thế nào?'",
+        "Ý nghĩa: Không dùng uy quyền để ép buộc.",
+        "Thể hiện sự dân chủ, lắng nghe và tôn trọng ý kiến quần thần."
+      ]
+    }
+  ];
+
+  // Xử lý mở chiếu
+  const startPresentation = () => {
+    setIsStarted(true);
+    setIsOpening(true);
+    
+    // Phát âm thanh mở giấy
+    if (audioRef.current && !isMuted) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(e => console.log("Audio play error", e));
+      
+      // Dừng âm thanh sau 5 giây (khi mở xong)
+      setTimeout(() => {
+        if(audioRef.current) {
+            audioRef.current.pause();
+            setIsOpening(false);
+        }
+      }, 5000);
+    } else {
+        setTimeout(() => setIsOpening(false), 5000);
+    }
+  };
+
+  const nextSlide = () => {
+    if (currentSlide < slides.length - 1) {
+      // Phát âm thanh lật trang ngắn
+      if (audioRef.current && !isMuted) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play();
+        setTimeout(() => audioRef.current.pause(), 800); 
+      }
+      setCurrentSlide(prev => prev + 1);
+    }
+  };
+
+  const prevSlide = () => {
+    if (currentSlide > 0) {
+      if (audioRef.current && !isMuted) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play();
+        setTimeout(() => audioRef.current.pause(), 800);
+      }
+      setCurrentSlide(prev => prev - 1);
+    }
+  };
+
+  const resetPresentation = () => {
+    setIsStarted(false);
+    setCurrentSlide(0);
+    setIsOpening(false);
+  };
+
+  return (
+    <div className="w-full h-screen bg-black flex flex-col items-center justify-center overflow-hidden relative font-serif select-none">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&display=swap');
+        
+        .font-thuphap { font-family: 'Dancing Script', cursive; }
+        .font-noidung { font-family: 'Cormorant Garamond', serif; }
+
+        /* Hiệu ứng 3D cho cuộn giấy (Trục cuốn) */
+        .scroll-roller {
+          background: linear-gradient(to bottom, 
+            #2a1810 0%, 
+            #5d4037 20%, 
+            #8d6e63 45%, 
+            #5d4037 55%, 
+            #2a1810 100%
+          );
+          box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+          position: relative;
+          z-index: 50;
+        }
+
+        /* Họa tiết rồng trên trục cuốn */
+        .scroll-roller::after {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background-image: radial-gradient(circle, #ffd700 1px, transparent 1px);
+          background-size: 10px 10px;
+          opacity: 0.3;
+          mix-blend-mode: overlay;
+        }
+
+        /* Đầu trục cuốn */
+        .roller-end {
+           background: radial-gradient(circle at 30% 30%, #8d6e63, #3e2723, #1a100a);
+           box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 5px 0 15px rgba(0,0,0,0.5);
+           border: 2px solid #3e2723;
+        }
+
+        .paper-bg {
+          /* Sử dụng texture giấy cũ chất lượng cao */
+          background-color: #e3cbae;
+          background-image: url("https://www.transparenttextures.com/patterns/aged-paper.png");
+          box-shadow: inset 0 0 100px rgba(0,0,0,0.4);
+        }
+        
+        /* Hiệu ứng mờ dần khi chuyển trang */
+        .slide-fade-enter {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        .slide-fade-enter-active {
+          opacity: 1;
+          transform: translateY(0);
+          transition: opacity 800ms ease-in-out, transform 800ms ease-out;
+        }
+        .slide-fade-exit {
+          opacity: 1;
+        }
+        .slide-fade-exit-active {
+          opacity: 0;
+          transition: opacity 500ms ease-in-out;
+        }
+
+        /* Animation mở cuộn giấy 5 giây */
+        .animate-unroll {
+            transition: height 5000ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
+        }
+      `}</style>
+
+      {/* Âm thanh tiếng giấy mở (dài khoảng 6-10s để loop tốt) */}
+      <audio ref={audioRef} src="https://assets.mixkit.co/active_storage/sfx/2409/2409-preview.mp3" preload="auto" />
+
+      {/* Màn hình chờ */}
+      {!isStarted && (
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity duration-1000">
+          <h1 className="text-[#d8a45d] text-8xl font-thuphap mb-8 tracking-wider drop-shadow-[0_0_15px_rgba(216,164,93,0.5)] animate-pulse">Chiếu Dời Đô</h1>
+          <p className="text-[#a1887f] text-2xl font-noidung mb-16 italic">Thiên Đô Chiếu - Lý Thái Tổ</p>
+          
+          {/* Nút bấm ở giữa 2 cuộn giấy đang đóng */}
+          <div className="relative group cursor-pointer" onClick={startPresentation}>
+             {/* Mô phỏng 2 cuộn giấy đang đóng lại */}
+             <div className="flex flex-col items-center justify-center gap-0">
+                <div className="w-[600px] h-16 scroll-roller rounded-full border-b border-[#1a100a]"></div>
+                <div className="w-[600px] h-16 scroll-roller rounded-full border-t border-[#1a100a] mt-[-10px] shadow-[0_-5px_20px_rgba(0,0,0,0.5)]"></div>
+             </div>
+             
+             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <button 
+                    className="w-20 h-20 bg-[#6b0000] rounded-full border-4 border-[#d8a45d] flex items-center justify-center text-[#d8a45d] shadow-[0_0_40px_rgba(255,0,0,0.4)] group-hover:scale-110 group-hover:bg-[#800000] transition-all duration-300"
+                >
+                    <Play size={40} fill="currentColor" className="ml-2" />
+                </button>
+             </div>
+             <p className="text-[#d8a45d] text-center mt-6 font-bold tracking-[0.2em] text-sm animate-bounce">NHẤN ĐỂ MỞ CHIẾU</p>
+          </div>
+        </div>
+      )}
+
+      {/* Khu vực trình chiếu chính */}
+      <div className={`relative flex flex-col items-center transition-opacity duration-1000 ${isStarted ? 'opacity-100' : 'opacity-0'}`}>
+        
+        {/* TRỤC TRÊN */}
+        <div className="relative z-20 w-[90vw] max-w-5xl">
+            {/* Thanh trục chính */}
+            <div className="w-full h-14 scroll-roller rounded-full flex items-center justify-between">
+                {/* Đầu trục trái */}
+                <div className="w-20 h-20 roller-end rounded-full -ml-8 flex items-center justify-center">
+                    <div className="w-10 h-10 bg-[#2a1810] rounded-full opacity-60"></div>
+                </div>
+                {/* Đầu trục phải */}
+                <div className="w-20 h-20 roller-end rounded-full -mr-8 flex items-center justify-center">
+                    <div className="w-10 h-10 bg-[#2a1810] rounded-full opacity-60"></div>
+                </div>
+            </div>
+        </div>
+
+        {/* PHẦN GIẤY NỘI DUNG (Giãn ra từ từ) */}
+        <div 
+            className={`w-[84vw] max-w-4xl paper-bg relative overflow-hidden animate-unroll shadow-[0_0_100px_rgba(0,0,0,1)] border-x border-[#5d4037]/30`}
+            style={{ 
+                height: isStarted ? '75vh' : '0px',
+            }}
+        >
+            {/* Nội dung bên trong - Luôn hiển thị đầy đủ, chỉ bị che bởi overflow của cha */}
+            <div className="absolute inset-0 w-full h-full p-8 md:p-12 flex flex-col items-center justify-center">
+                
+                {/* Hoa văn nền mờ */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+                     <div className="w-[400px] h-[400px] rounded-full border-[20px] border-[#6b0000]"></div>
+                     <div className="absolute w-[300px] h-[300px] border-[2px] border-[#6b0000] rotate-45"></div>
+                </div>
+
+                {/* SLIDES */}
+                {slides.map((slide, index) => (
+                    <div 
+                        key={index}
+                        className={`absolute w-full px-8 md:px-16 transition-all duration-1000 flex flex-col items-center text-center
+                        ${currentSlide === index ? 'opacity-100 z-10 scale-100 blur-0' : 'opacity-0 z-0 scale-95 blur-sm pointer-events-none'}`}
+                    >
+                         {slide.isTitle ? (
+                            <div className="mt-4">
+                              <h2 className="text-7xl md:text-9xl font-thuphap text-[#800000] mb-6 drop-shadow-sm leading-tight py-4">
+                                {slide.title}
+                              </h2>
+                              <h3 className="text-3xl md:text-5xl italic font-noidung mb-12 text-[#3e2723] opacity-80">
+                                {slide.subtitle}
+                              </h3>
+                              <div className="w-32 h-1 bg-[#800000] mx-auto mb-10 opacity-60"></div>
+                              <p className="text-4xl md:text-6xl font-bold font-noidung uppercase tracking-[0.15em] text-[#2d1b0d]">
+                                {slide.content}
+                              </p>
+                              <p className="text-xl md:text-3xl mt-6 text-[#5d4037] font-noidung italic">
+                                {slide.subContent}
+                              </p>
+                              {/* Dấu triện đỏ mô phỏng */}
+                              <div className="mt-12 w-24 h-24 border-4 border-red-800 rounded-lg flex items-center justify-center mx-auto opacity-70 rotate-12 mask-image">
+                                  <span className="text-red-800 font-thuphap text-2xl font-bold">Lý Gia</span>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="w-full h-full flex flex-col justify-center">
+                                <div className="border-b-2 border-[#800000]/20 pb-6 mb-8 w-fit mx-auto">
+                                    <span className="text-lg uppercase tracking-[0.4em] font-noidung text-[#5d4037] block mb-2">{slide.title}</span>
+                                    <h2 className="text-5xl md:text-7xl font-thuphap text-[#800000]">{slide.heading}</h2>
+                                </div>
+                                
+                                <ul className="space-y-6 text-left max-w-3xl mx-auto">
+                                    {slide.points.map((p, i) => (
+                                    <li key={i} className="flex items-start gap-4 text-2xl md:text-3xl font-noidung text-[#3e2723] leading-relaxed">
+                                        <span className="text-[#800000] text-3xl mt-1">❖</span>
+                                        <span>{p}</span>
+                                    </li>
+                                    ))}
+                                </ul>
+                            </div>
+                          )}
+                    </div>
+                ))}
+            </div>
+            
+            {/* Hiệu ứng bóng đổ 3D bên trong cuộn giấy (trên và dưới) */}
+            <div className="absolute top-0 left-0 w-full h-12 bg-gradient-to-b from-[#2a1810]/40 to-transparent pointer-events-none z-20"></div>
+            <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-[#2a1810]/40 to-transparent pointer-events-none z-20"></div>
+        </div>
+
+        {/* TRỤC DƯỚI */}
+        <div className="relative z-20 w-[90vw] max-w-5xl mt-[-2px]"> {/* mt âm để khớp khít */}
+            <div className="w-full h-14 scroll-roller rounded-full flex items-center justify-between shadow-[0_-5px_15px_rgba(0,0,0,0.3)]">
+                <div className="w-20 h-20 roller-end rounded-full -ml-8 flex items-center justify-center">
+                    <div className="w-10 h-10 bg-[#2a1810] rounded-full opacity-60"></div>
+                </div>
+                <div className="w-20 h-20 roller-end rounded-full -mr-8 flex items-center justify-center">
+                    <div className="w-10 h-10 bg-[#2a1810] rounded-full opacity-60"></div>
+                </div>
+            </div>
+            
+            {/* Dây tua rua trang trí treo dưới trục */}
+            <div className="absolute left-20 bottom-[-80px] w-4 h-20 bg-red-900 mx-auto z-10 flex flex-col items-center">
+                <div className="w-8 h-8 rounded-full bg-[#d8a45d] border-2 border-[#800000] -mt-4 relative z-20"></div>
+                <div className="w-full h-full bg-[#800000] shadow-lg"></div>
+                <div className="w-12 h-16 bg-[#6b0000] clip-path-tassel mt-[-5px]"></div>
+            </div>
+            <div className="absolute right-20 bottom-[-80px] w-4 h-20 bg-red-900 mx-auto z-10 flex flex-col items-center">
+                <div className="w-8 h-8 rounded-full bg-[#d8a45d] border-2 border-[#800000] -mt-4 relative z-20"></div>
+                <div className="w-full h-full bg-[#800000] shadow-lg"></div>
+                <div className="w-12 h-16 bg-[#6b0000] clip-path-tassel mt-[-5px]"></div>
+            </div>
+        </div>
+
+        {/* Thanh điều hướng (Chỉ hiện khi đã mở xong hoặc gần xong) */}
+        {isStarted && (
+            <div className={`fixed bottom-8 flex items-center gap-8 bg-black/40 backdrop-blur-md p-3 px-8 rounded-full border border-[#d8a45d]/20 transition-all duration-1000 delay-[4000ms] ${isOpening ? 'opacity-0 translate-y-10' : 'opacity-100 translate-y-0'}`}>
+                <button 
+                    disabled={currentSlide === 0}
+                    onClick={prevSlide}
+                    className="p-3 text-[#d8a45d] hover:text-white transition disabled:opacity-30 disabled:hover:text-[#d8a45d]"
+                >
+                    <ChevronLeft size={32} />
+                </button>
+                
+                <div className="text-[#d8a45d] font-noidung text-xl tracking-widest min-w-[80px] text-center">
+                    {currentSlide + 1} / {slides.length}
+                </div>
+
+                <button 
+                    disabled={currentSlide === slides.length - 1}
+                    onClick={nextSlide}
+                    className="p-3 text-[#d8a45d] hover:text-white transition disabled:opacity-30 disabled:hover:text-[#d8a45d]"
+                >
+                    <ChevronRight size={32} />
+                </button>
+
+                <div className="w-[1px] h-8 bg-[#d8a45d]/30 mx-2"></div>
+
+                <button 
+                    onClick={() => setIsMuted(!isMuted)}
+                    className="text-[#d8a45d] hover:text-white transition"
+                    title={isMuted ? "Bật âm thanh" : "Tắt âm thanh"}
+                >
+                    {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+                </button>
+
+                <button 
+                    onClick={resetPresentation}
+                    className="text-[#d8a45d] hover:text-red-400 transition ml-2"
+                    title="Đóng chiếu lại"
+                >
+                    <RotateCcw size={24} />
+                </button>
+            </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ScrollPresentation;
+
